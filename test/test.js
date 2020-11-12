@@ -1,7 +1,24 @@
 import { strictEqual } from 'assert';
+import * as lib from '../lib/lib.js'
 
-describe('#indexOf()', function () {
-    it('should return -1 when the value is not present', function () {
-        strictEqual([1, 2, 3].indexOf(4), -1);
+class TimerStub {
+    periodicRate() {
+        return this.periodicRate_
+    }
+
+    schedulePeriodicCallback(callback, rate) {
+        this.periodicRate_ = rate
+    }
+}
+
+function start(timer, callback, time, rate) {
+    lib.start(timer, callback, time, rate)
+}
+
+describe('start', function () {
+    it('should schedule periodic callbacks at specified rate', function () {
+        const timer = new TimerStub()
+        start(timer, function () { }, new lib.Milliseconds(1000), new lib.Milliseconds(25))
+        strictEqual(timer.periodicRate().milliseconds(), 25)
     });
 });
