@@ -2,6 +2,8 @@ import { strictEqual } from 'assert';
 import * as lib from '../lib/lib.js'
 
 class TimerStub {
+    constructor() { this.periodicCallbacksCeased_ = false }
+
     periodicRate() {
         return this.periodicRate_
     }
@@ -12,6 +14,10 @@ class TimerStub {
     }
 
     callback() { this.callback_() }
+
+    periodicCallbacksCeased() { return this.periodicCallbacksCeased_ }
+
+    ceasePeriodicCallbacks() { this.periodicCallbacksCeased_ = true }
 }
 
 function callback(timer) { timer.callback() }
@@ -62,5 +68,17 @@ describe('start', function () {
         assertFalse(called)
         callback(this.timer) // 1200 ms
         assertTrue(called)
+    });
+
+    it('should cease periodic internal callbacks after specified time', function () {
+        start(this.timer, function () { }, new lib.Milliseconds(1000), new lib.Milliseconds(250))
+        callback(this.timer) // 250 ms
+        assertFalse(this.timer.periodicCallbacksCeased())
+        callback(this.timer) // 500 ms
+        assertFalse(this.timer.periodicCallbacksCeased())
+        callback(this.timer) // 750 ms
+        assertFalse(this.timer.periodicCallbacksCeased())
+        callback(this.timer) // 1000 ms
+        assertTrue(this.timer.periodicCallbacksCeased())
     });
 });
