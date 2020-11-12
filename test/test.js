@@ -48,4 +48,18 @@ describe('start', function () {
         callback(timer) // 1000 ms
         assertTrue(called)
     });
+
+    it('should call user supplied callback after specified time even if late', function () {
+        const timer = new TimerStub()
+        let called = false
+        start(timer, function () { called = true }, new lib.Milliseconds(1000), new lib.Milliseconds(300))
+        callback(timer) // 300 ms
+        assertFalse(called)
+        callback(timer) // 600 ms
+        assertFalse(called)
+        callback(timer) // 900 ms
+        assertFalse(called)
+        callback(timer) // 1200 ms
+        assertTrue(called)
+    });
 });
