@@ -29,37 +29,38 @@ function assertTrue(b) {
 }
 
 describe('start', function () {
+    beforeEach(function () {
+        this.timer = new TimerStub()
+    })
+
     it('should schedule periodic internal callbacks at specified rate', function () {
-        const timer = new TimerStub()
-        start(timer, function () { }, new lib.Milliseconds(1000), new lib.Milliseconds(25))
-        strictEqual(timer.periodicRate().milliseconds(), 25)
+        start(this.timer, function () { }, new lib.Milliseconds(1000), new lib.Milliseconds(25))
+        strictEqual(this.timer.periodicRate().milliseconds(), 25)
     });
 
     it('should call user supplied callback after specified time', function () {
-        const timer = new TimerStub()
         let called = false
-        start(timer, function () { called = true }, new lib.Milliseconds(1000), new lib.Milliseconds(250))
-        callback(timer) // 250 ms
+        start(this.timer, function () { called = true }, new lib.Milliseconds(1000), new lib.Milliseconds(250))
+        callback(this.timer) // 250 ms
         assertFalse(called)
-        callback(timer) // 500 ms
+        callback(this.timer) // 500 ms
         assertFalse(called)
-        callback(timer) // 750 ms
+        callback(this.timer) // 750 ms
         assertFalse(called)
-        callback(timer) // 1000 ms
+        callback(this.timer) // 1000 ms
         assertTrue(called)
     });
 
     it('should call user supplied callback after specified time even if late', function () {
-        const timer = new TimerStub()
         let called = false
-        start(timer, function () { called = true }, new lib.Milliseconds(1000), new lib.Milliseconds(300))
-        callback(timer) // 300 ms
+        start(this.timer, function () { called = true }, new lib.Milliseconds(1000), new lib.Milliseconds(300))
+        callback(this.timer) // 300 ms
         assertFalse(called)
-        callback(timer) // 600 ms
+        callback(this.timer) // 600 ms
         assertFalse(called)
-        callback(timer) // 900 ms
+        callback(this.timer) // 900 ms
         assertFalse(called)
-        callback(timer) // 1200 ms
+        callback(this.timer) // 1200 ms
         assertTrue(called)
     });
 });
