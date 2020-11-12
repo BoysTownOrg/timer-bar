@@ -1,5 +1,8 @@
 {
   "name": "timer-bar",
   "version": "1.0.0",
-  "description": "a visual \"countdown\" timer without numerals"
+  "description": "a visual \"countdown\" timer without numerals",
+  "devDependencies": {
+    "mocha": "^8.2.1"
+  }
 }
